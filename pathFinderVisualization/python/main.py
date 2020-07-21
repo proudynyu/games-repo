@@ -7,7 +7,7 @@ from Spot import Spot
 # Pathfinder algotirhm based on Tech with Tim video
 # @youtube https://www.youtube.com/watch?v=JtiK0DOeI4A&t=3597s
 
-WIDTH = 800
+WIDTH = 600
 WIN = pg.display.set_mode((WIDTH, WIDTH))
 
 # screen title
@@ -55,6 +55,12 @@ def getClickPos(pos, rows, width):
 	col = y // gap
 	return row, col
 
+def reconstruct_path(cameFrom, current, callback):
+	while current in cameFrom:
+		current = cameFrom[current]
+		current.makePath()
+		callback()
+
 def algorithm(callback, grid, start, end):
 	count = 0
 	openSet = PriorityQueue()
@@ -76,6 +82,8 @@ def algorithm(callback, grid, start, end):
 		openSetHash.remove(current)
 
 		if current == end:
+			reconstruct_path(cameFrom, end, callback)
+			end.makeEnd()
 			return True
 
 		for neightbor in current.neightbors:
@@ -84,13 +92,19 @@ def algorithm(callback, grid, start, end):
 			if tempScore < gScore[neightbor]:
 				cameFrom[neightbor] = current
 				gScore[neightbor] = tempScore
-				fScore[neightbor] = tempScore + h(neightbor.get_pos(), end.get_pos())
+				fScore[neightbor] = tempScore + h(neightbor.getPos(), end.getPos())
 				if neightbor not in openSetHash:
 					count += 1
 					openSet.put((fScore[neightbor], count, neightbor))
 					openSetHash.add(neightbor)
-					neightbor.makeClose()
+					neightbor.makeOpen()
 
+		callback()
+
+		if current != start:
+			current.makeClose()
+
+	return False
 
 def main(window, width):
 	ROWS = 50
@@ -100,16 +114,12 @@ def main(window, width):
 	end = None
 
 	run = True
-	started = False
 	while run:
 		draw(window, grid, ROWS, width)
 		for event in pg.event.get():
 			if event.type == pg.QUIT:
 				run = False
 			
-			if started:
-				continue
-
 			if pg.mouse.get_pressed()[0]:
 				pos = pg.mouse.get_pos()
 				row, col = getClickPos(pos, ROWS, width)
@@ -134,13 +144,18 @@ def main(window, width):
 				elif spot == end:
 					end = None
 
-			if event.type == KEYDOWN:
-				if event.key == pg.K_SPACE and not started:
+			if event.type == pg.KEYDOWN:
+				if event.key == pg.K_SPACE and start and end:
 					for row in grid:
 						for spot in row:
 							spot.updateNeigthbors(grid)
 
 					algorithm(lambda: draw(window, grid, ROWS, width), grid, start, end)
+				
+				if event.key == pg.K_c:
+					start = None
+					end = None
+					grid = makeGrid(ROWS, width)
 
 	pg.quit()
 

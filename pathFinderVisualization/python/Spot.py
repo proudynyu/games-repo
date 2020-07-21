@@ -45,6 +45,9 @@ class Spot:
 	def makeStart(self):
 		self.color = ORANGE
 
+	def makePath(self):
+		self.color = PURPLE
+
 	def makeEnd(self):
 		self.color = PURPLE
 
