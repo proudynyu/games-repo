@@ -10,18 +10,20 @@ class Grid extends React.Component {
   }
   render () {
     let grid = []
+    const gap = Math.floor(this.props.width / 10);
 
-    for (let row = 0; row < this.rows; row++) {
-      for (let col = 0; col < this.cols; col++) {
+    for (let row = 0; row < this.props.rows; row++) {
+      for (let col = 0; col < this.props.cols; col++) {
         grid.push(
-          <Box boxClass={'box'}/>
+          <div className="box">{row}</div>
         )
       }
     }
 
+    console.log(grid);
     return (
-      <div style={{'width': this.width}}>
-        { grid }
+      <div className="grid">
+        {grid}
       </div>
     )
   } 

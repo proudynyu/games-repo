@@ -1,12 +1,19 @@
 import React from 'react';
 
 class Box extends React.Component {
-  constructor(boxClass){
+  constructor(boxClass, width){
     super();
-    this.class = boxClass;
+    this.boxClass = `${boxClass}`;
+    this.width = `${width}`
   }
   render(){
-    return (<div className={this.class}></div>)
+    return (
+      <div 
+        className={this.props.boxClass}
+        width={this.props.width}
+      >
+      </div>
+    )
   }
 }
 
