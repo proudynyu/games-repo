@@ -1,10 +1,17 @@
 import React from 'react';
+import Header from './components/Header';
+import Grid from './components/Grid'
 import './App.css'
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div>
-      <h1>Hello world</h1>
+    <div className="app">
+    <Header />
+
+      <div className="container">
+        <Grid />
+      </div>
+
     </div>
   );
 }
